@@ -1,9 +1,10 @@
 package main
 
 import (
-	"net"
 	"log"
+	"net"
 	"os"
+
 	"github.com/sanderjn1/is105sem03/mycrypt"
 )
 
@@ -12,10 +13,12 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
-	kryptertMelding := mycrypt.Krypter([]rune(os.Args[1]), mycrypt.ALF_SEM03, 4)
-	log.Println("Kryptert melding: ", string(kryptertMelding))
-	_, err = conn.Write([]byte(string(kryptertMelding)))
 
+	log.Println("os.Args[1] = ", os.Args[1])
+
+	kryptertMelding := mycrypt.Krypter([]rune(os.Args[1]), mycrypt.ALF_SEM03, 4)
+
+	_, err = conn.Write([]byte(string(kryptertMelding)))
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -23,7 +26,10 @@ func main() {
 	n, err := conn.Read(buf)
 	if err != nil {
 		log.Fatal(err)
-	} 
+	}
 	response := string(buf[:n])
 	log.Printf("reply from proxy: %s", response)
+	dekryptertMelding := mycrypt.Krypter([]rune(string(buf[:n])), mycrypt.ALF_SEM03, len(mycrypt.ALF_SEM03)+4)
+	log.Println("Dekrypter melding: ", string(dekryptertMelding))
+
 }
